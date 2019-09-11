@@ -54,7 +54,7 @@ fn parserTest(input:&str) -> IResult<&str, &str> {
 }
 
 fn parseInput(input: &str) -> (&str, &str){
-    let parsedInput = parser(input);
+    let parsedInput = parserTest(input);
     match parsedInput{
         Ok(k) => k,
         Err(e) => ("i am", "error"),
@@ -68,9 +68,12 @@ fn BoxInput(input: &str) ->Box<list>{
             let isLetter: IResult<&str,&str> = alpha1(k.1);
             match isLetter{
                 Ok(r) => {
-                    println!("{:?}", k.1);
+                    println!("{:?}", r.0);
                     let theSign = getSign(k.0);
                     let new_string = r.1.to_string();
+                    if(r.0 == ""){
+                        return Box::new(list::Var(new_string))
+                    }
                     let VarTreelist = list::VarBox(Box::new(list::Var(new_string)), theSign.1, BoxInput(&k.0[1..]));
                     return Box::new(VarTreelist);
                 }Err(t) => (),
@@ -112,8 +115,8 @@ fn getSign(input: &str) ->(&str, op) {
 
 fn main() {
 //    println!("output: {:?}", digit1("2"));
-    println!("{:?}", BoxInput("a+1+1"));
-
+//    println!("{:?}", BoxInput("  1+1"));
+    println!("{:?}", BoxInput("1+   a"));
 //    let a: IResult<&str,&str> = alpha1("1+1");
  //   println!("{:?}",a);
 //     match a{
